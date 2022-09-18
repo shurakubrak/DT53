@@ -85,7 +85,7 @@ int main(int argc, char** argv)
 	find_cpu();
 	
 RELOAD:
-	if (!sip.init(setts.pb_adjust, setts.capture_adjust, &setts, &device)) {
+	if (!sip.init(setts.pb_adjust, setts.capture_adjust, &setts, &device, &tone)) {
 		std::cout << "SIP init error" << endl;
 		return 3;
 	}
@@ -110,10 +110,10 @@ RELOAD:
 	}
 
 	if (!reload && argc == 1) {
-		//if (!device.dsp_load()) {
-		//	std::cout << "DSP load error" << endl;
-		//	return 7;
-		//}
+		if (!device.dsp_load()) {
+			std::cout << "DSP load error" << endl;
+			return 7;
+		}
 		sip.voiceIP(ip_address);
 	}
 

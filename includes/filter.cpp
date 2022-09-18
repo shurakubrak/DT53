@@ -14,22 +14,15 @@ int apply_filter_one_sample(int sample)
 	int retval, j, i;
 	retval = 0;
 
-	if (filters_data[0].filterType > 0)
-	{
-		for (j = 0; j < MAX_FILTER_COUNT; j++)
-		{
+	if (filters_data[0].filterType > 0) {
+		for (j = 0; j < MAX_FILTER_COUNT; j++) {
 			if (filters_data[j].filterType <= 0)
 				break;
-			if (filters_data[j].filterType < 20)
-			{
+			if (filters_data[j].filterType < 20) {
 				for (i = 0; i < COUNT_SAMPLES; i++)
-				{
-
 					retval += samples[i] * filters_data[j].filterKoefs[i];
-				}
 			}
-			else //type>20
-			{
+			else { //type>20
 				float curV = retval;
 				float tempCurv = 0.0;
 				int ktr = filters_data[j].filterOrder % 10;
@@ -48,9 +41,7 @@ int apply_filter_one_sample(int sample)
 		}
 	}
 	else
-	{
 		retval = sample;
-	}
 	for (i = 0; i < COUNT_SAMPLES - 2; i++)
 		samples[i] = samples[i + 1];
 	samples[COUNT_SAMPLES - 2] = sample;

@@ -10,10 +10,11 @@ using namespace pj;
 ///////////////////////////////////////////////////////////////
 
 bool sip_t::init(float PBAdjust, float CaptureAdjust,
-	publ_settings_t* setts, device_t* device)
+	publ_settings_t* setts, device_t* device, tones_t* tone)
 {
 	m_setts = setts;
 	m_device = device;
+	m_tone = tone;
 	for (size_t i = 0; i < NumberAccount; i++) 
 		m_accounts[i].init(this, &m_device->m_buttons);
 	
@@ -198,7 +199,7 @@ void sip_t::parse_one_part_addr(std::vector<std::string>* pllist, string partIP,
 			fill_playlist(pllist, "empty.wav");
 		return;
 	}
-	for (int k = 0; k < partIP.length(); k++)
+	for (size_t k = 0; k < partIP.length(); k++)
 	{
 		int pos = partIP.length() - k - 1;
 		if (pos == 1 && partIP[k] == '1') {
@@ -258,7 +259,7 @@ void sip_t::voiceIP(string ipa)
 	StringVector pllist;
 
 	int numQ = 0;
-	for (int i = 0; i < ipa.length(); i++) {
+	for (size_t i = 0; i < ipa.length(); i++) {
 		if (ipa[i] == '.') {
 			numQ++;
 			parse_one_part_addr(&pllist, curQ, numQ);
@@ -569,7 +570,7 @@ bool sip_t::account_close()
 
 	for (int i = 0; i < NumberAccount; i++) {
 		m_accounts[i].close_acc();
-		m_accounts[i].setRegistration(false);
+		//m_accounts[i].setRegistration(false);
 	}
 	//Пауза для завершения отключения
 	m_ep.libHandleEvents(1000);
@@ -884,7 +885,7 @@ void sip_t::vmsg_play(player_t* plrVMsg, uint8_t numb)
 	if (plrVMsg->m_status == OFF) {
 		for (int i = 0; i < NumberAccount; i++)
 		{
-			for (int a = 0; a < m_accounts[i].m_calls.size(); a++) {
+			for (size_t a = 0; a < m_accounts[i].m_calls.size(); a++) {
 				if (!m_accounts[i].m_calls[a]->isActive())
 					continue;
 				CallInfo ci = m_accounts[i].m_calls[a]->getInfo();
@@ -958,7 +959,7 @@ void sip_t::vmsg_play(player_t* plrVMsg, uint8_t numb)
 		}
 		for (int i = 0; i < NumberAccount; i++)
 		{
-			for (int a = 0; a < m_accounts[i].m_calls.size(); a++) {
+			for (size_t a = 0; a < m_accounts[i].m_calls.size(); a++) {
 				if (!m_accounts[i].m_calls[a]->isActive())
 					continue;
 				CallInfo ci = m_accounts[i].m_calls[a]->getInfo();
@@ -1574,7 +1575,7 @@ void sip_t::set_phone_status(phone_status_t status)
 			m_device->led_button_on(func_t::SpeeckerPhone);
 		}
 		break;
-
+ 
 	case phone_status_t::OUTCALL:
 		ring_stop();
 		get_tone()->ring_back_start();

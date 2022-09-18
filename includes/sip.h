@@ -205,10 +205,10 @@ struct publ_settings_t
 	std::string vmsg_4 = "Tones/VMsg_1.wav";
 	std::string vmsg_5 = "Tones/VMsg_1.wav";
 
-	float capture_adjust = 5.0;
-	float capture_adjust_off = 0.01;
-	float pb_adjust = 1.0;
-	float pb_adjustOff = 0.1;
+	float capture_adjust = 5.0f;
+	float capture_adjust_off = 0.01f;
+	float pb_adjust = 1.0f;
+	float pb_adjustOff = 0.1f;
 
 	int aec_gain_mic1 = 6;
 	int aec_gain_mic2 = 6;
@@ -358,7 +358,7 @@ public:
 		m_path = path;
 	}
 	bool init(float PBAdjust, float CaptureAdjust,
-		publ_settings_t* setts, device_t* device);
+		publ_settings_t* setts, device_t* device, tones_t* tone);
 	bool codec_set(bool init = false);
 	void close();
 	bool add_command(sip_cmd_t* s2d) { return lst_s2d_access(s2d, access_t::WRITE); }

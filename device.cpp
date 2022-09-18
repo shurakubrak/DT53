@@ -130,10 +130,10 @@ void device_t::device_write(dev_cmd_t command, int index, gpio_t* gpio, keypad_t
 			break;
 
 		case dev_cmd_t::Mic:
-			device_write_aec(beg_aec_t::AEC_MIC_SEL, index);
+			device_write_aec(beg_aec_t::AEC_MIC_SEL, static_cast<char>(index));
 			break;
 		case dev_cmd_t::AMP:
-			device_write_aec(beg_aec_t::AEC_AMP_SEL, index);
+			device_write_aec(beg_aec_t::AEC_AMP_SEL, static_cast<char>(index));
 			break;
 		}
 	}
