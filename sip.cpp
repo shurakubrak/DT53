@@ -570,7 +570,8 @@ bool sip_t::account_close()
 
 	for (int i = 0; i < NumberAccount; i++) {
 		m_accounts[i].close_acc();
-		//m_accounts[i].setRegistration(false);
+		if (m_accounts[i].m_active && i>0)
+			m_accounts[i].setRegistration(false);
 	}
 	//Пауза для завершения отключения
 	m_ep.libHandleEvents(1000);
