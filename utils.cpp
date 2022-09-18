@@ -1,8 +1,9 @@
 #include <cassert>
 #include <vector>
 #include <iostream>
+#include <cstring>
 #include <thread>
-#include "utils.h"
+#include "includes/utils.h"
 
 using namespace std;
 using namespace std::chrono;
@@ -174,3 +175,195 @@ bool wait4(atomic<bool>* flag, uint64_t msec)
 			msleep(5);
 	return false;
 }
+/**************************************************/
+
+bool get_network(network_t* nw, bool wlan)
+{
+	string ip_addr = "";
+	int psb = -1;
+	int pse = -1;
+	char buf[250];
+	string str = "";
+	FILE* f;
+	bool ret = false;
+
+	if (wlan)
+		f = popen("ifconfig wlan0", "r");
+	else
+		f = popen("ifconfig eth0", "r");
+
+	if (f) {
+		while (fgets(buf, BUFSIZ, f)) {
+			str += buf;
+			for (int i = 0; i < 250; i++)
+				buf[i] = 0;
+		}
+		/*ip адрес*/
+		psb = str.find("inet ") + 5;
+		if (psb != string::npos) {
+			pse = str.find_first_of(' ', psb);
+			if (pse != string::npos) {
+				ip_addr = str.substr(psb, pse - psb);
+				if (is_valid_ip_address(ip_addr)) {
+					nw->ip_addr = ip_addr;
+					ret = true;
+				}
+			}
+		}
+		/*маска*/
+		psb = str.find("netmask ") + 8;
+		if (psb != string::npos) {
+			pse = str.find_first_of(' ', psb);
+			if (pse != string::npos)
+				nw->netmask = str.substr(psb, pse - psb);
+		}
+		/*MAC*/
+		psb = str.find("ether ") + 6;
+		if (psb != string::npos) {
+			pse = str.find_first_of(' ', psb);
+			if (pse != string::npos)
+				nw->mac = str.substr(psb, pse - psb);
+		}
+	}
+	pclose(f);
+
+	/*шлюз по умолчанию*/
+	f = popen("route", "r");
+	if (f) {
+		while (fgets(buf, BUFSIZ, f)) {
+			str = buf;
+			if (wlan)
+				psb = str.find("wlan0");
+			else
+				psb = str.find("eth0");
+			if (psb != string::npos) {
+				psb = str.find("default") + 7;
+				if (psb != string::npos) {
+					for (int i = psb; i < str.length(); i++)
+						if (str[i] != ' ') {
+							psb = i;
+							break;
+						}
+					pse = str.find_first_of(' ', psb);
+					if (pse != string::npos) {
+						nw->gateway = str.substr(psb, pse - psb);
+						break;
+					}
+				}
+			}
+			for (int i = 0; i < 250; i++)
+				buf[i] = 0;
+		}
+	}
+	pclose(f);
+
+	return ret;
+}
+/******************************************************/
+
+bool is_valid_ip_address(string checkValue)
+{
+	int num, i, len;
+	char* ch;
+
+	//Количество блоков (четвертей) в адресе
+	int blocksCount = 0;
+	//  Проверяем длину
+	len = checkValue.length();
+	if (len < 7 || len>15)
+		return false;
+
+	//создаем новый указатель
+	char* st = strdup(checkValue.c_str());
+	//char* nextST = NULL;
+	//получаем указатель на первый блок до точки
+	ch = strtok(st, ".");
+
+	while (ch != NULL)
+	{
+		blocksCount++;
+		num = 0;
+		i = 0;
+
+		//  преобразовываем каждый блок к Int
+		while (ch[i] != '\0')
+		{
+			num = num * 10;
+			num = num + (ch[i] - '0');
+			i++;
+			if (num > 999)
+				break;
+		}
+
+		if (num < 0 || num>255)
+		{
+			return false;
+		}
+		//первый и последний блок не равны нулю
+		if ((blocksCount == 1 && num == 0))
+		{
+			return false;
+		}
+		//получаем указатель на следующий блок
+		ch = strtok(NULL, ".");
+	}
+
+	// проверяем общее количество блоков
+	if (blocksCount != 4)
+	{
+		return false;
+	}
+	free(st);
+	free(ch);
+	return true;
+}
+/************************************************/
+
+string get_cpu_id()
+{
+	FILE* cpuinfo = fopen("/proc/cpuinfo", "rb");
+	char* arg = 0;
+	size_t size = 0;
+	std::string ID;
+	while (getdelim(&arg, &size, 0, cpuinfo) != -1)
+	{
+		std::string str(arg);
+		ID = str.substr(str.size() - 17, 16);
+	}
+	fclose(cpuinfo);
+	return ID;
+}
+/**********************************************************************/
+
+string format_addr(string addr)
+{
+	string str = "";
+	bool write = false;
+
+	for (unsigned int i = 0; i < addr.length(); i++)
+	{
+		if (addr[i] == ':') write = true;
+		else if ((addr[i] == '>') || (addr[i] == '@')) break;
+		else if (write)	str += addr[i];
+	}
+	return str;
+}
+//--------------------------------------------------------------------
+
+string format_addr_server(string addr)
+{
+	string str = "";
+	bool write = false;
+
+	for (unsigned int i = 0; i < addr.length(); i++)
+	{
+		if (addr[i] == '@') write = true;
+		else if ((addr[i] == '>') || (i == addr.length())) break;
+		else if (write)	str += addr[i];
+	}
+	if (str.empty())
+		return "local";
+	else
+		return str;
+}
+//-----------------------------------------------------

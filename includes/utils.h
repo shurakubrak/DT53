@@ -26,3 +26,24 @@ void ssleep(size_t sec);
 void msleep(size_t msec);
 bool wait4(bool* flag, uint64_t msec);
 bool wait4(std::atomic<bool>* flag, uint64_t msec);
+
+/*получение сетевых параметров*/
+struct network_t
+{
+	std::string ip_addr = "127.0.0.1";
+	std::string netmask = "255.255.255.0";
+	std::string mac = "00:00:00:00:00:00";
+	std::string gateway = "8.8.8.8";
+};
+bool get_network(network_t* nw, bool wlan);/*получить параметры сети*/
+bool is_valid_ip_address(std::string checkValue);
+std::string get_cpu_id();
+std::string format_addr(std::string addr);
+std::string format_addr_server(std::string addr);
+
+// битвые операции
+#define BOOL(x) (!(!(x)))
+#define BitSet(arg,posn) ((arg) | (1L << (posn)))
+#define BitClr(arg,posn) ((arg) & ~(1L << (posn)))
+#define BitTst(arg,posn) BOOL((arg) & (1L << (posn)))
+#define BitFlp(arg,posn) ((arg) ^ (1L << (posn)))

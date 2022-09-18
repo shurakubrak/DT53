@@ -74,94 +74,136 @@
   <ImportGroup Label="Shared" />
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
+    <TargetName>phone</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
+    <TargetName>phone</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
+    <TargetName>phone</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
+    <TargetName>phone</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <TargetName>phone</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <TargetName>phone</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
+    <TargetName>phone</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
+    <TargetName>phone</TargetName>
+  </PropertyGroup>
   <ItemGroup>
+    <ClCompile Include="account.cpp" />
+    <ClCompile Include="call.cpp" />
+    <ClCompile Include="device.cpp" />
+    <ClCompile Include="gpio.cpp" />
+    <ClCompile Include="includes\filter.cpp" />
+    <ClCompile Include="keypad.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="rc5oper.cpp" />
+    <ClCompile Include="RC5Simple.cpp" />
+    <ClCompile Include="sip.cpp" />
     <ClCompile Include="sqlite_db.cpp" />
+    <ClCompile Include="tones.cpp" />
+    <ClCompile Include="uart.cpp" />
     <ClCompile Include="utils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="includes\classes.h" />
+    <ClInclude Include="includes\device.h" />
+    <ClInclude Include="includes\filter.h" />
     <ClInclude Include="includes\main.h" />
+    <ClInclude Include="includes\rc5oper.h" />
+    <ClInclude Include="includes\RC5Simple.h" />
+    <ClInclude Include="includes\sip.h" />
     <ClInclude Include="includes\sqlite_db.h" />
+    <ClInclude Include="includes\tones.h" />
     <ClInclude Include="includes\utils.h" />
   </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <ClCompile>
       <CppLanguageStandard>c++17</CppLanguageStandard>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\includes;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
-      <LibraryDependencies>sqlite3;pthread;dl</LibraryDependencies>
+      <LibraryDependencies>pjsua2-armv7l-unknown-linux-gnueabihf;pjsua-armv7l-unknown-linux-gnueabihf;pjsip-ua-armv7l-unknown-linux-gnueabihf;pjsip-simple-armv7l-unknown-linux-gnueabihf;pj-armv7l-unknown-linux-gnueabihf;pjsip-armv7l-unknown-linux-gnueabihf;pjmedia-codec-armv7l-unknown-linux-gnueabihf;pjmedia-armv7l-unknown-linux-gnueabihf;pjmedia-videodev-armv7l-unknown-linux-gnueabihf;pjmedia-audiodev-armv7l-unknown-linux-gnueabihf;pjsdp-armv7l-unknown-linux-gnueabihf;ssl;crypto;portaudio-armv7l-unknown-linux-gnueabihf;g7221codec-armv7l-unknown-linux-gnueabihf;ilbccodec-armv7l-unknown-linux-gnueabihf;resample-armv7l-unknown-linux-gnueabihf;srtp-armv7l-unknown-linux-gnueabihf;gsmcodec-armv7l-unknown-linux-gnueabihf;speex-armv7l-unknown-linux-gnueabihf;webrtc-armv7l-unknown-linux-gnueabihf;opus;pjnath-armv7l-unknown-linux-gnueabihf;pjlib-util-armv7l-unknown-linux-gnueabihf;asound;sqlite3;pthread;wiringPi;dl</LibraryDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
     <ClCompile>
       <CppLanguageStandard>c++17</CppLanguageStandard>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\includes;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
-      <LibraryDependencies>sqlite3;pthread;dl</LibraryDependencies>
+      <LibraryDependencies>pjsua2-armv7l-unknown-linux-gnueabihf;pjsua-armv7l-unknown-linux-gnueabihf;pjsip-ua-armv7l-unknown-linux-gnueabihf;pjsip-simple-armv7l-unknown-linux-gnueabihf;pj-armv7l-unknown-linux-gnueabihf;pjsip-armv7l-unknown-linux-gnueabihf;pjmedia-codec-armv7l-unknown-linux-gnueabihf;pjmedia-armv7l-unknown-linux-gnueabihf;pjmedia-videodev-armv7l-unknown-linux-gnueabihf;pjmedia-audiodev-armv7l-unknown-linux-gnueabihf;pjsdp-armv7l-unknown-linux-gnueabihf;ssl;crypto;portaudio-armv7l-unknown-linux-gnueabihf;g7221codec-armv7l-unknown-linux-gnueabihf;ilbccodec-armv7l-unknown-linux-gnueabihf;resample-armv7l-unknown-linux-gnueabihf;srtp-armv7l-unknown-linux-gnueabihf;gsmcodec-armv7l-unknown-linux-gnueabihf;speex-armv7l-unknown-linux-gnueabihf;webrtc-armv7l-unknown-linux-gnueabihf;opus;pjnath-armv7l-unknown-linux-gnueabihf;pjlib-util-armv7l-unknown-linux-gnueabihf;asound;sqlite3;pthread;wiringPi;dl</LibraryDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
     <ClCompile>
       <CppLanguageStandard>c++17</CppLanguageStandard>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\includes;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
-      <LibraryDependencies>sqlite3;pthread;dl</LibraryDependencies>
+      <LibraryDependencies>pjsua2-armv7l-unknown-linux-gnueabihf;pjsua-armv7l-unknown-linux-gnueabihf;pjsip-ua-armv7l-unknown-linux-gnueabihf;pjsip-simple-armv7l-unknown-linux-gnueabihf;pj-armv7l-unknown-linux-gnueabihf;pjsip-armv7l-unknown-linux-gnueabihf;pjmedia-codec-armv7l-unknown-linux-gnueabihf;pjmedia-armv7l-unknown-linux-gnueabihf;pjmedia-videodev-armv7l-unknown-linux-gnueabihf;pjmedia-audiodev-armv7l-unknown-linux-gnueabihf;pjsdp-armv7l-unknown-linux-gnueabihf;ssl;crypto;portaudio-armv7l-unknown-linux-gnueabihf;g7221codec-armv7l-unknown-linux-gnueabihf;ilbccodec-armv7l-unknown-linux-gnueabihf;resample-armv7l-unknown-linux-gnueabihf;srtp-armv7l-unknown-linux-gnueabihf;gsmcodec-armv7l-unknown-linux-gnueabihf;speex-armv7l-unknown-linux-gnueabihf;webrtc-armv7l-unknown-linux-gnueabihf;opus;pjnath-armv7l-unknown-linux-gnueabihf;pjlib-util-armv7l-unknown-linux-gnueabihf;asound;sqlite3;pthread;wiringPi;dl</LibraryDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
     <ClCompile>
       <CppLanguageStandard>c++17</CppLanguageStandard>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\includes;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
-      <LibraryDependencies>sqlite3;pthread;dl</LibraryDependencies>
+      <LibraryDependencies>pjsua2-armv7l-unknown-linux-gnueabihf;pjsua-armv7l-unknown-linux-gnueabihf;pjsip-ua-armv7l-unknown-linux-gnueabihf;pjsip-simple-armv7l-unknown-linux-gnueabihf;pj-armv7l-unknown-linux-gnueabihf;pjsip-armv7l-unknown-linux-gnueabihf;pjmedia-codec-armv7l-unknown-linux-gnueabihf;pjmedia-armv7l-unknown-linux-gnueabihf;pjmedia-videodev-armv7l-unknown-linux-gnueabihf;pjmedia-audiodev-armv7l-unknown-linux-gnueabihf;pjsdp-armv7l-unknown-linux-gnueabihf;ssl;crypto;portaudio-armv7l-unknown-linux-gnueabihf;g7221codec-armv7l-unknown-linux-gnueabihf;ilbccodec-armv7l-unknown-linux-gnueabihf;resample-armv7l-unknown-linux-gnueabihf;srtp-armv7l-unknown-linux-gnueabihf;gsmcodec-armv7l-unknown-linux-gnueabihf;speex-armv7l-unknown-linux-gnueabihf;webrtc-armv7l-unknown-linux-gnueabihf;opus;pjnath-armv7l-unknown-linux-gnueabihf;pjlib-util-armv7l-unknown-linux-gnueabihf;asound;sqlite3;pthread;wiringPi;dl</LibraryDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <CppLanguageStandard>c++17</CppLanguageStandard>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\includes;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
-      <LibraryDependencies>sqlite3;pthread;dl</LibraryDependencies>
+      <LibraryDependencies>pjsua2-armv7l-unknown-linux-gnueabihf;pjsua-armv7l-unknown-linux-gnueabihf;pjsip-ua-armv7l-unknown-linux-gnueabihf;pjsip-simple-armv7l-unknown-linux-gnueabihf;pj-armv7l-unknown-linux-gnueabihf;pjsip-armv7l-unknown-linux-gnueabihf;pjmedia-codec-armv7l-unknown-linux-gnueabihf;pjmedia-armv7l-unknown-linux-gnueabihf;pjmedia-videodev-armv7l-unknown-linux-gnueabihf;pjmedia-audiodev-armv7l-unknown-linux-gnueabihf;pjsdp-armv7l-unknown-linux-gnueabihf;ssl;crypto;portaudio-armv7l-unknown-linux-gnueabihf;g7221codec-armv7l-unknown-linux-gnueabihf;ilbccodec-armv7l-unknown-linux-gnueabihf;resample-armv7l-unknown-linux-gnueabihf;srtp-armv7l-unknown-linux-gnueabihf;gsmcodec-armv7l-unknown-linux-gnueabihf;speex-armv7l-unknown-linux-gnueabihf;webrtc-armv7l-unknown-linux-gnueabihf;opus;pjnath-armv7l-unknown-linux-gnueabihf;pjlib-util-armv7l-unknown-linux-gnueabihf;asound;sqlite3;pthread;wiringPi;dl</LibraryDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <CppLanguageStandard>c++17</CppLanguageStandard>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\includes;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
-      <LibraryDependencies>sqlite3;pthread;dl</LibraryDependencies>
+      <LibraryDependencies>pjsua2-armv7l-unknown-linux-gnueabihf;pjsua-armv7l-unknown-linux-gnueabihf;pjsip-ua-armv7l-unknown-linux-gnueabihf;pjsip-simple-armv7l-unknown-linux-gnueabihf;pj-armv7l-unknown-linux-gnueabihf;pjsip-armv7l-unknown-linux-gnueabihf;pjmedia-codec-armv7l-unknown-linux-gnueabihf;pjmedia-armv7l-unknown-linux-gnueabihf;pjmedia-videodev-armv7l-unknown-linux-gnueabihf;pjmedia-audiodev-armv7l-unknown-linux-gnueabihf;pjsdp-armv7l-unknown-linux-gnueabihf;ssl;crypto;portaudio-armv7l-unknown-linux-gnueabihf;g7221codec-armv7l-unknown-linux-gnueabihf;ilbccodec-armv7l-unknown-linux-gnueabihf;resample-armv7l-unknown-linux-gnueabihf;srtp-armv7l-unknown-linux-gnueabihf;gsmcodec-armv7l-unknown-linux-gnueabihf;speex-armv7l-unknown-linux-gnueabihf;webrtc-armv7l-unknown-linux-gnueabihf;opus;pjnath-armv7l-unknown-linux-gnueabihf;pjlib-util-armv7l-unknown-linux-gnueabihf;asound;sqlite3;pthread;wiringPi;dl</LibraryDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
     <ClCompile>
       <CppLanguageStandard>c++17</CppLanguageStandard>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\includes;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
-      <LibraryDependencies>sqlite3;pthread;dl</LibraryDependencies>
+      <LibraryDependencies>pjsua2-armv7l-unknown-linux-gnueabihf;pjsua-armv7l-unknown-linux-gnueabihf;pjsip-ua-armv7l-unknown-linux-gnueabihf;pjsip-simple-armv7l-unknown-linux-gnueabihf;pj-armv7l-unknown-linux-gnueabihf;pjsip-armv7l-unknown-linux-gnueabihf;pjmedia-codec-armv7l-unknown-linux-gnueabihf;pjmedia-armv7l-unknown-linux-gnueabihf;pjmedia-videodev-armv7l-unknown-linux-gnueabihf;pjmedia-audiodev-armv7l-unknown-linux-gnueabihf;pjsdp-armv7l-unknown-linux-gnueabihf;ssl;crypto;portaudio-armv7l-unknown-linux-gnueabihf;g7221codec-armv7l-unknown-linux-gnueabihf;ilbccodec-armv7l-unknown-linux-gnueabihf;resample-armv7l-unknown-linux-gnueabihf;srtp-armv7l-unknown-linux-gnueabihf;gsmcodec-armv7l-unknown-linux-gnueabihf;speex-armv7l-unknown-linux-gnueabihf;webrtc-armv7l-unknown-linux-gnueabihf;opus;pjnath-armv7l-unknown-linux-gnueabihf;pjlib-util-armv7l-unknown-linux-gnueabihf;asound;sqlite3;pthread;wiringPi;dl</LibraryDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
     <ClCompile>
       <CppLanguageStandard>c++17</CppLanguageStandard>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\includes;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
-      <LibraryDependencies>sqlite3;pthread;dl</LibraryDependencies>
+      <LibraryDependencies>pjsua2-armv7l-unknown-linux-gnueabihf;pjsua-armv7l-unknown-linux-gnueabihf;pjsip-ua-armv7l-unknown-linux-gnueabihf;pjsip-simple-armv7l-unknown-linux-gnueabihf;pj-armv7l-unknown-linux-gnueabihf;pjsip-armv7l-unknown-linux-gnueabihf;pjmedia-codec-armv7l-unknown-linux-gnueabihf;pjmedia-armv7l-unknown-linux-gnueabihf;pjmedia-videodev-armv7l-unknown-linux-gnueabihf;pjmedia-audiodev-armv7l-unknown-linux-gnueabihf;pjsdp-armv7l-unknown-linux-gnueabihf;ssl;crypto;portaudio-armv7l-unknown-linux-gnueabihf;g7221codec-armv7l-unknown-linux-gnueabihf;ilbccodec-armv7l-unknown-linux-gnueabihf;resample-armv7l-unknown-linux-gnueabihf;srtp-armv7l-unknown-linux-gnueabihf;gsmcodec-armv7l-unknown-linux-gnueabihf;speex-armv7l-unknown-linux-gnueabihf;webrtc-armv7l-unknown-linux-gnueabihf;opus;pjnath-armv7l-unknown-linux-gnueabihf;pjlib-util-armv7l-unknown-linux-gnueabihf;asound;sqlite3;pthread;wiringPi;dl</LibraryDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
