@@ -73,9 +73,8 @@ bool tones_t::tones_stop()
 {
 	if (m_generator_1 == nullptr)
 		return false;
-	if (m_generator_1->isBusy()) {
+	if (m_generator_1->isBusy()) 
 		m_generator_1->stop();
-	}
 	return true;
 }
 //-------------------------------------------------------

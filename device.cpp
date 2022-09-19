@@ -74,8 +74,7 @@ void device_t::device_write(dev_cmd_t command, int index, gpio_t* gpio, keypad_t
 	flash_t flash;
 	try
 	{
-		switch (command)
-		{
+		switch (command) {
 		case dev_cmd_t::GENLEDRED_OFF:
 			if (gpio == nullptr) return;
 			gpio->del_flash(GLedRed);
@@ -229,16 +228,14 @@ vector<int> device_t::find_button_by_phone_presents(string URI, bool fullUri)
 	string server("");
 	vector<int> vButton;
 
-	if (fullUri)
-	{
+	if (fullUri) {
 		phone = format_addr(URI);
 		server = format_addr_server(URI);
 		for (int i = 0; i < NumberButtons; i++)
 			if (m_buttons[i].phone == phone && m_buttons[i].server == server)
 				vButton.push_back(m_buttons[i].buttonID);
 	}
-	else
-	{
+	else {
 		for (int i = 0; i < NumberButtons; i++)
 			if (m_buttons[i].phone == URI)
 				vButton.push_back(m_buttons[i].buttonID);

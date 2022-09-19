@@ -26,8 +26,7 @@ bool sip_t::init(float PBAdjust, float CaptureAdjust,
 		m_ep_cfg.logConfig.level = m_log_level;
 		cout << "Log 'Y'" << " file: './THE.log'" << endl;
 	}
-	else
-	{
+	else {
 		m_ep_cfg.logConfig.filename = "";
 		m_ep_cfg.logConfig.consoleLevel = 0;
 		m_ep_cfg.logConfig.level = 0;
@@ -191,16 +190,14 @@ void sip_t::fill_playlist(std::vector<std::string>* pllist, string fname)
 void sip_t::parse_one_part_addr(std::vector<std::string>* pllist, string partIP, int numberPart)
 {
 	string file_name = "";
-	if (partIP == "000" || partIP == "00" || partIP == "0")
-	{
+	if (partIP == "000" || partIP == "00" || partIP == "0")	{
 		file_name = "0.wav";
 		fill_playlist(pllist, file_name);
 		if (numberPart < 4)
 			fill_playlist(pllist, "empty.wav");
 		return;
 	}
-	for (size_t k = 0; k < partIP.length(); k++)
-	{
+	for (size_t k = 0; k < partIP.length(); k++) {
 		int pos = partIP.length() - k - 1;
 		if (pos == 1 && partIP[k] == '1') {
 			//nameFile = "" namefile.  + curQ[k] + curQ[k + 1] + ".wav";
@@ -284,8 +281,7 @@ void sip_t::voiceIP(string ipa)
 int sip_t::calculate_calls()
 {
 	int num_calls = 0;
-	for (int i = 0; i < NumberAccount; i++)
-	{
+	for (int i = 0; i < NumberAccount; i++) {
 		if (m_accounts[i].m_active)
 			num_calls += m_accounts[i].m_calls.size();
 	}
@@ -297,14 +293,12 @@ crdnt_call_t sip_t::get_crdnt_call(string call_id_str)
 {
 	crdnt_call_t cc;
 
-	if (!call_id_str.empty())
-	{
+	if (!call_id_str.empty()) {
 		for (int i = 0; i < NumberAccount; i++)
 			for (unsigned int a = 0; a < m_accounts[i].m_calls.size(); a++) {
 				if (!m_accounts[i].m_calls[a]->isActive())
 					continue;
-				if (m_accounts[i].m_calls[a]->getInfo().callIdString == call_id_str)
-				{
+				if (m_accounts[i].m_calls[a]->getInfo().callIdString == call_id_str) {
 					cc.call = m_accounts[i].m_calls[a];
 					cc.count_acc = i;
 					cc.count_call = a;
@@ -326,8 +320,7 @@ bool sip_t::find_rout(std::string dial_number)
 			dial_from <='" + dial_number +
 		"' and (dial_to || 'я') >='" + dial_number +
 		"' and length(dial_from) <=" + to_string(dial_number.length());
-	if (db.exec_sql())
-	{
+	if (db.exec_sql()) {
 		m_route.account = atoi(db.field_by_name("account").c_str());
 		m_route.num_digit = atoi(db.field_by_name("num_digits").c_str());
 		m_route.status = true;
@@ -421,8 +414,7 @@ void sip_t::player_destroy()
 
 void sip_t::ring_play()
 {
-	if (!plrRing->m_status)
-	{
+	if (!plrRing->m_status)	{
 		plrRing->startTransmit(m_playback);
 		plrRing->setPos(0);
 		plrRing->m_status = true;
@@ -432,8 +424,7 @@ void sip_t::ring_play()
 
 void sip_t::ring_stop()
 {
-	if (plrRing->getPortId() > -1)// && plrRing->status)
-	{
+	if (plrRing->getPortId() > -1) {
 		plrRing->m_status = false;
 		plrRing->stopTransmit(m_playback);
 	}
@@ -462,8 +453,7 @@ bool sip_t::account_create(string ip_address, bool modify)
 
 		//Получаем всех абонентов, которые есть под кнопкой.
 		//добаляем как Buddy
-		for (int i = 0; i < NumberButtons; i++)
-		{
+		for (int i = 0; i < NumberButtons; i++)	{
 			if (m_device->m_buttons[i].server == m_accounts[0].m_acc_set.sipserver 
 				&& !m_device->m_buttons[i].phone.empty())
 				m_accounts[0].buddy_register(m_device->m_buttons[i].phone, SIP_VER_PTP, true);
@@ -503,8 +493,7 @@ bool sip_t::account_create(string ip_address, bool modify)
 			} while (db.next_rec());
 		}
 	}
-	else
-	{
+	else {
 		db.close_db();
 		return false;
 	}
@@ -525,12 +514,10 @@ bool sip_t::account_create(string ip_address, bool modify)
 		return false;
 	}
 	int i = 1;
-	do
-	{
+	do {
 		m_accounts[i].m_acc_set.phone = db.field_by_name("phone");
 
-		if (!m_accounts[i].m_acc_set.phone.empty())
-		{
+		if (!m_accounts[i].m_acc_set.phone.empty())	{
 			m_accounts[i].m_acc_set.sipserver = db.field_by_name("sipserver");
 			m_accounts[i].m_acc_set.password = db.field_by_name("password");
 			m_accounts[i].m_acc_set.sip_ver = atoi(db.field_by_name("sip_ver").c_str());
@@ -558,8 +545,7 @@ bool sip_t::account_close()
 {
 	m_ep.hangupAllCalls();
 
-	for (unsigned int a = 0; a < NumberAccount; a++)
-	{
+	for (unsigned int a = 0; a < NumberAccount; a++) {
 		for (unsigned int i = 0; i < m_accounts[a].m_buddys.size(); i++)
 			delete m_accounts[a].m_buddys[i];
 		m_accounts[a].m_buddys.clear();
@@ -589,8 +575,7 @@ bool sip_t::reload_buddys()
 	}
 
 	//Добавляем Buddy для системного аккаунда
-	if (m_accounts[0].m_active)
-	{
+	if (m_accounts[0].m_active)	{
 		//Получаем всех абонентов, которые есть под кнопкой.
 		//добаляем как Buddy
 		for (int i = 0; i < NumberButtons; i++)	{
@@ -607,11 +592,9 @@ bool sip_t::reload_buddys()
 			return false;
 		db.m_sql_str = "select * from v_users_button \
 							where button_id IS NULL";
-		if (db.exec_sql())
-		{
+		if (db.exec_sql()){
 			int i = 0;
-			do
-			{
+			do {
 				string Server = "";
 				string Phone = "";
 				int sip_ver = atoi(db.field_by_name("sip_ver").c_str());
@@ -661,24 +644,19 @@ crdnt_call_t sip_t::get_first_call(bool forUnhold)
 		for (unsigned int a = 0; a < m_accounts[i].m_calls.size(); a++) {
 			if (!m_accounts[i].m_calls[a]->isActive())
 				continue;
-			if (forUnhold)
-			{
+			if (forUnhold) {
 				if ((m_accounts[i].m_calls[a]->getInfo().state == PJSIP_INV_STATE_CONFIRMED ||
 					m_accounts[i].m_calls[a]->getInfo().state == PJSIP_INV_STATE_CONNECTING) &&
-					m_accounts[i].m_calls[a]->m_call_status == call_status_t::OnHold)
-				{
-					if (tm)
-					{
-						if (tm > m_accounts[i].m_calls[a]->m_time_start)
-						{
+					m_accounts[i].m_calls[a]->m_call_status == call_status_t::OnHold) {
+					if (tm) {
+						if (tm > m_accounts[i].m_calls[a]->m_time_start) {
 							tm = m_accounts[i].m_calls[a]->m_time_start;
 							lc.call = m_accounts[i].m_calls[a];
 							lc.count_acc = i;
 							lc.count_call = a;
 						}
 					}
-					else
-					{
+					else {
 						tm = m_accounts[i].m_calls[a]->m_time_start;
 						lc.call = m_accounts[i].m_calls[a];
 						lc.count_acc = i;
@@ -689,20 +667,16 @@ crdnt_call_t sip_t::get_first_call(bool forUnhold)
 			else
 			{
 				if (m_accounts[i].m_calls[a]->getInfo().state == PJSIP_INV_STATE_CONFIRMED ||
-					m_accounts[i].m_calls[a]->getInfo().state == PJSIP_INV_STATE_CONNECTING)
-				{
-					if (tm)
-					{
-						if (tm > m_accounts[i].m_calls[a]->m_time_start)
-						{
+					m_accounts[i].m_calls[a]->getInfo().state == PJSIP_INV_STATE_CONNECTING) {
+					if (tm)	{
+						if (tm > m_accounts[i].m_calls[a]->m_time_start) {
 							tm = m_accounts[i].m_calls[a]->m_time_start;
 							lc.call = m_accounts[i].m_calls[a];
 							lc.count_acc = i;
 							lc.count_call = a;
 						}
 					}
-					else
-					{
+					else {
 						tm = m_accounts[i].m_calls[a]->m_time_start;
 						lc.call = m_accounts[i].m_calls[a];
 						lc.count_acc = i;
@@ -721,26 +695,21 @@ crdnt_call_t sip_t::get_last_call(bool forUnhold)
 	time_t tm = 0;
 
 	for (int i = 0; i < NumberAccount; i++)
-		for (unsigned int a = 0; a < m_accounts[i].m_calls.size(); a++)
-		{
+		for (unsigned int a = 0; a < m_accounts[i].m_calls.size(); a++)	{
 			if (!m_accounts[i].m_calls[a]->isActive())
 				continue;
 			if ((m_accounts[i].m_calls[a]->getInfo().state == PJSIP_INV_STATE_CONFIRMED ||
 				m_accounts[i].m_calls[a]->getInfo().state == PJSIP_INV_STATE_CONNECTING) &&
-				m_accounts[i].m_calls[a]->m_call_status != call_status_t::OnHold)
-			{
-				if (tm)
-				{
-					if (tm < m_accounts[i].m_calls[a]->m_time_start)
-					{
+				m_accounts[i].m_calls[a]->m_call_status != call_status_t::OnHold) {
+				if (tm)	{
+					if (tm < m_accounts[i].m_calls[a]->m_time_start) {
 						tm = m_accounts[i].m_calls[a]->m_time_start;
 						lc.call = m_accounts[i].m_calls[a];
 						lc.count_acc = i;
 						lc.count_call = a;
 					}
 				}
-				else
-				{
+				else {
 					tm = m_accounts[i].m_calls[a]->m_time_start;
 					lc.call = m_accounts[i].m_calls[a];
 					lc.count_acc = i;
@@ -769,8 +738,7 @@ string sip_t::find_call(string port)
 
 void sip_t::cmd_hungup(string call)
 {
-	for (int i = 0; i < NumberAccount; i++)
-	{
+	for (int i = 0; i < NumberAccount; i++)	{
 		if (m_accounts[i].m_calls.size())
 			if (m_accounts[i].bye_call(call))
 				break;
@@ -790,7 +758,6 @@ void sip_t::cmd_exit()
 {
 	for (int i = 0; i < NumberAccount; i++)
 		m_accounts[i].close_acc();
-	//Terminated = true;
 }
 /****************************************/
 
@@ -808,8 +775,7 @@ void sip_t::cmd_call(string portA, string portB, string type)
 	first_digit_stop();
 	for (int i = 0; i < NumberAccount; i++) {
 		if (m_accounts[i].m_acc_set.sipserver == portA
-			&& m_accounts[i].m_active)
-		{
+			&& m_accounts[i].m_active) {
 			if (type.find("opex", 0) != string::npos)
 				/*вызов на Орех даём без теста*/
 				m_accounts[i].call_to(portB, type, true);
@@ -884,8 +850,7 @@ void sip_t::vmsg_play(player_t* plrVMsg, uint8_t numb)
 	AudioMedia* aud_med;
 	/* Приграть сообщение */
 	if (plrVMsg->m_status == OFF) {
-		for (int i = 0; i < NumberAccount; i++)
-		{
+		for (int i = 0; i < NumberAccount; i++)	{
 			for (size_t a = 0; a < m_accounts[i].m_calls.size(); a++) {
 				if (!m_accounts[i].m_calls[a]->isActive())
 					continue;
@@ -916,8 +881,7 @@ void sip_t::vmsg_play(player_t* plrVMsg, uint8_t numb)
 			plrVMsg->m_status = ON;
 			plrVMsg->startTransmit(m_playback);
 			plrVMsg->setPos(0);
-			switch (numb)
-			{
+			switch (numb) {
 			case 1:
 				m_device->led_button_on(func_t::VMsg_1);
 				break;
@@ -940,8 +904,7 @@ void sip_t::vmsg_play(player_t* plrVMsg, uint8_t numb)
 	else if (plrVMsg->getPortId() > -1) {
 		plrVMsg->m_status = OFF;
 		plrVMsg->stopTransmit(m_playback);
-		switch (numb)
-		{
+		switch (numb) {
 		case 1:
 			m_device->led_button_off(func_t::VMsg_1);
 			break;
@@ -958,8 +921,7 @@ void sip_t::vmsg_play(player_t* plrVMsg, uint8_t numb)
 			m_device->led_button_off(func_t::VMsg_5);
 			break;
 		}
-		for (int i = 0; i < NumberAccount; i++)
-		{
+		for (int i = 0; i < NumberAccount; i++)	{
 			for (size_t a = 0; a < m_accounts[i].m_calls.size(); a++) {
 				if (!m_accounts[i].m_calls[a]->isActive())
 					continue;
@@ -991,8 +953,7 @@ void sip_t::vmsg_play(player_t* plrVMsg, uint8_t numb)
 
 void sip_t::mk_hold()
 {
-	switch (get_phone_state())
-	{
+	switch (get_phone_state()) {
 	case phone_status_t::IDLE:
 		cmd_unhold();
 		break;
@@ -1011,11 +972,9 @@ void sip_t::mk_hold()
 
 void sip_t::mk_xfer()
 {
-	if (!m_fl_xfer)
-	{
+	if (!m_fl_xfer)	{
 		crdnt_call_t lc = get_last_call();
-		if (lc.call->isActive())
-		{
+		if (lc.call->isActive()) {
 			cmd_hold();
 			lc.call->m_fl_wait_xfer_target = true;
 			lc.call->m_fl_wait_xfer_source = false;
@@ -1023,16 +982,13 @@ void sip_t::mk_xfer()
 			first_digit_start();
 		}
 	}
-	else //возврат к source
-	{
+	else {
 		m_fl_xfer = false;
 		for (int i = 0; i < NumberAccount; i++)
 			for (unsigned int a = 0; a < m_accounts[i].m_calls.size(); a++)
-				if (m_accounts[i].m_calls[a]->m_fl_wait_xfer_target)
-				{
+				if (m_accounts[i].m_calls[a]->m_fl_wait_xfer_target) {
 					crdnt_call_t target = get_crdnt_call(m_accounts[i].m_calls[a]->m_pair_call_xfer);
-					if (target.call)
-					{
+					if (target.call) {
 						pj::CallOpParam prm;
 						prm.statusCode = PJSIP_SC_OK;
 						target.call->hangup(prm);
@@ -1071,8 +1027,7 @@ void sip_t::mk_xfer_execute(string source_id)
 		source.count_acc != target.count_acc) {
 		for (unsigned i = 0; i < source.call->getInfo().media.size(); i++) {
 			if (source.call->getInfo().media[i].type == PJMEDIA_TYPE_AUDIO &&
-				source.call->getMedia(i))
-			{
+				source.call->getMedia(i)) {
 				AudioMedia* source_aud_med = (AudioMedia*)source.call->getMedia(i);
 				if (target.call->getInfo().media.size()) { // если target уже ответил
 					for (unsigned a = 0; a < target.call->getInfo().media.size(); a++)
@@ -1097,8 +1052,8 @@ void sip_t::mk_xfer_execute(string source_id)
 							hang_phone();
 						}
 				}
-				else if (target.call->getInfo().state == PJSIP_INV_STATE_EARLY)
-				{ //если target ещё не ответил
+				else if (target.call->getInfo().state == PJSIP_INV_STATE_EARLY)	{ 
+					//если target ещё не ответил
 					//отключаемся от абонентa source_call
 					source_aud_med->stopTransmit(m_playback);
 					m_capture.stopTransmit(*source_aud_med);
@@ -1140,8 +1095,7 @@ void sip_t::mk_conf(bool spkr)
 
 	string Command = "";
 	int i = 0;
-	do
-	{
+	do {
 		string dial = "";
 		int sip_ver = atoi(db.field_by_name("sip_ver").c_str());
 		int sip_ver2 = atoi(db.field_by_name("sip_ver2").c_str());
@@ -1160,8 +1114,7 @@ void sip_t::mk_conf(bool spkr)
 		else if (sip_ver_work == SIP_VER_PTP)
 			dial = db.field_by_name("server_work");
 
-		if (!dial.empty())
-		{
+		if (!dial.empty()) {
 			if (spkr)
 				cmd_call(m_accounts[0].m_acc_set.sipserver, dial, "horn");
 			else
@@ -1185,26 +1138,20 @@ bool sip_t::mk_conf_port(int button_id)
 		ps == phone_status_t::OUTCALL ||
 		ps == phone_status_t::EARLY ||
 		ps == phone_status_t::OUTCALL_INCALL ||
-		ps == phone_status_t::EARLY_INCALL)
-	{
-		for (int i = 0; i < NumberAccount; i++)
-		{
-			for (unsigned int a = 0; a < m_accounts[i].m_calls.size(); a++)
-			{
+		ps == phone_status_t::EARLY_INCALL)	{
+		for (int i = 0; i < NumberAccount; i++)	{
+			for (unsigned int a = 0; a < m_accounts[i].m_calls.size(); a++)	{
 				if (!m_accounts[i].m_calls[a]->isActive())
 					continue;
 				if (m_accounts[i].m_calls[a]->m_call_status != call_status_t::OnHold
-					&& m_accounts[i].m_calls[a]->m_call_status != call_status_t::Transfered)
-				{
+					&& m_accounts[i].m_calls[a]->m_call_status != call_status_t::Transfered) {
 					if (m_accounts[i].m_calls[a]->getInfo().state == PJSIP_INV_STATE_CONFIRMED ||
 						m_accounts[i].m_calls[a]->getInfo().state == PJSIP_INV_STATE_CONNECTING ||
 						(m_accounts[i].m_calls[a]->getInfo().state == PJSIP_INV_STATE_EARLY
-							&& !m_accounts[i].m_calls[a]->m_in_call))
-					{
+							&& !m_accounts[i].m_calls[a]->m_in_call)) {
 						alow_add = true;
 						for (unsigned int y = 0; y < m_device->m_buttons[button_id].calls.size(); y++)
-							if (m_device->m_buttons[button_id].calls[y] == m_accounts[i].m_calls[a])
-							{
+							if (m_device->m_buttons[button_id].calls[y] == m_accounts[i].m_calls[a]) {
 								alow_add = false;
 								break;
 							}
@@ -1280,8 +1227,7 @@ bool sip_t::find_user_phone_by_dial_number(string dial_number, bool half)
 		"' or phone_home='" + dial_number +
 		"' or phone_work='" + dial_number + "'";
 
-	if (!db.exec_sql())
-	{	//	OUTSIDE
+	if (!db.exec_sql())	{	//	OUTSIDE
 		db.close_db();
 		if (half)
 			return false; //если smart-dial и не нашел
@@ -1366,8 +1312,7 @@ bool sip_t::find_user_phone_by_button_call(int button_id, string mixer)
 
 	try {
 		for (int i = 0; i < NumberButtons; i++)
-			if (m_device->m_buttons[i].buttonID == button_id)
-			{
+			if (m_device->m_buttons[i].buttonID == button_id) {
 				Phone = m_device->m_buttons[i].phone;
 				server = m_device->m_buttons[i].server;
 			}
@@ -1415,19 +1360,14 @@ void sip_t::hang_phone()
 	first_digit_stop();
 	inter_digit_stop();
 
-	for (int i = 0; i < NumberAccount; i++)
-	{
-		for (unsigned int a = 0; a < m_accounts[i].m_calls.size(); a++)
-		{
+	for (int i = 0; i < NumberAccount; i++)	{
+		for (unsigned int a = 0; a < m_accounts[i].m_calls.size(); a++) 	{
 			if (!m_accounts[i].m_calls[a]->isActive())
 				continue;
-			if (m_accounts[i].m_calls[a]->m_call_status == call_status_t::Transfered)
-			{
-				for (unsigned l = 0; l < m_accounts[i].m_calls[a]->getInfo().media.size(); l++)
-				{
+			if (m_accounts[i].m_calls[a]->m_call_status == call_status_t::Transfered) {
+				for (unsigned l = 0; l < m_accounts[i].m_calls[a]->getInfo().media.size(); l++)	{
 					if (m_accounts[i].m_calls[a]->getInfo().media[l].type == PJMEDIA_TYPE_AUDIO 
-						&& m_accounts[i].m_calls[a]->getMedia(l))
-					{
+						&& m_accounts[i].m_calls[a]->getMedia(l)){
 						AudioMedia* aud_med = (AudioMedia*)m_accounts[i].m_calls[a]->getMedia(l);
 						aud_med->stopTransmit(m_playback);
 						m_capture.stopTransmit(*aud_med);
@@ -1466,24 +1406,20 @@ void sip_t::phone_status_define()
 	int in = 0;
 	int out = 0;
 	int early = 0;
-	for (int i = 0; i < NumberAccount; i++)
-	{
-		for (unsigned int a = 0; a < m_accounts[i].m_calls.size(); a++)
-		{
+	for (int i = 0; i < NumberAccount; i++)	{
+		for (unsigned int a = 0; a < m_accounts[i].m_calls.size(); a++)	{
 			if (!m_accounts[i].m_calls[a]->isActive())
 				continue;
 
 			if (m_accounts[i].m_calls[a]->m_call_status != call_status_t::OnHold
 				&& m_accounts[i].m_calls[a]->m_call_status != call_status_t::xFer
-				&& m_accounts[i].m_calls[a]->m_call_status != call_status_t::Transfered)
-			{
+				&& m_accounts[i].m_calls[a]->m_call_status != call_status_t::Transfered) {
 				number_calls++;
 
 				if (m_accounts[i].m_calls[a]->getInfo().state == PJSIP_INV_STATE_CONFIRMED ||
 					m_accounts[i].m_calls[a]->getInfo().state == PJSIP_INV_STATE_CONNECTING)
 					conn++;
-				else if (m_accounts[i].m_calls[a]->getInfo().state == PJSIP_INV_STATE_EARLY)
-				{
+				else if (m_accounts[i].m_calls[a]->getInfo().state == PJSIP_INV_STATE_EARLY) {
 					if (m_accounts[i].m_calls[a]->m_in_call)
 						in++;
 					else
@@ -1491,8 +1427,7 @@ void sip_t::phone_status_define()
 				}
 				else if (m_accounts[i].m_calls[a]->getInfo().state == PJSIP_INV_STATE_INCOMING)
 					in++;
-				else if (m_accounts[i].m_calls[a]->getInfo().state == PJSIP_INV_STATE_CALLING)
-				{
+				else if (m_accounts[i].m_calls[a]->getInfo().state == PJSIP_INV_STATE_CALLING) {
 					if (!m_accounts[i].m_calls[a]->m_in_call)
 						out++;
 				}
@@ -1504,8 +1439,7 @@ void sip_t::phone_status_define()
 	//no calls
 	if (number_calls == 0 && !m_firstdigit_start && m_dial_number.empty() && !m_fl_conf_port)
 		set_phone_status(phone_status_t::IDLE);
-	else
-	{
+	else {
 		// Easy statuses
 		if (!conn && !out && !early && !in && !m_fl_conf_port)
 			set_phone_status(phone_status_t::IDLE);
@@ -1558,11 +1492,9 @@ void sip_t::set_phone_status(phone_status_t status)
 	else
 		m_device->device_write(dev_cmd_t::AMP, static_cast<int>(amp_select_t::AMP_HF));
 
-	switch (status)
-	{
+	switch (status)	{
 	case phone_status_t::IDLE:
-		if (!m_firstdigit_start && !m_interdigit_start)
-		{
+		if (!m_firstdigit_start && !m_interdigit_start)	{
 			get_tone()->tones_long_stop();
 			ring_stop();
 			hang_phone();
@@ -1658,20 +1590,16 @@ void sip_t::cq_timeout_remove()
 void sip_t::marker_work()
 {
 	SendInstantMessageParam msg_prm;
-	for (int i = 0; i < NumberAccount; i++)
-	{
-		for (unsigned int a = 0; a < m_accounts[i].m_calls.size(); a++)
-		{
+	for (int i = 0; i < NumberAccount; i++)	{
+		for (unsigned int a = 0; a < m_accounts[i].m_calls.size(); a++)	{
 			if (!m_accounts[i].m_calls[a]->isActive())
 				continue;
 			//Work with of marker
-			if (m_accounts[i].m_acc_set.sip_ver == SIP_VER_PTP)
-			{
+			if (m_accounts[i].m_acc_set.sip_ver == SIP_VER_PTP)	{
 				//send marker (only outgoing side)
 				if (!m_accounts[i].m_calls[a]->m_in_call
 					&& (get_time_ms() - m_accounts[i].m_calls[a]->m_time_marker)
-					>= SEND_MARKER)
-				{
+					>= SEND_MARKER)	{
 					m_accounts[i].m_calls[a]->m_time_marker = get_time_ms();
 					msg_prm.content = sip_msg::Marker;
 					m_accounts[i].m_calls[a]->sendInstantMessage(msg_prm);
@@ -1680,8 +1608,7 @@ void sip_t::marker_work()
 				//for outgoing side - reset 'time_marker' in 'onInstantMessageStatus'
 				//for incomming side - reset in 'onInstantMessage'
 				if (get_time_ms() - m_accounts[i].m_calls[a]->m_time_marker_response 
-					>= WAIT_MARKER)
-				{
+					>= WAIT_MARKER)	{
 					cmd_hungup(m_accounts[i].m_calls[a]->getInfo().callIdString);
 					continue;
 				}
@@ -1691,11 +1618,9 @@ void sip_t::marker_work()
 			if (!m_accounts[i].m_calls[a]->isActive())
 				continue;
 			if (!m_accounts[i].m_calls[a]->m_in_call 
-				&& m_accounts[i].m_calls[a]->m_tm_noanswer)
-			{
+				&& m_accounts[i].m_calls[a]->m_tm_noanswer)	{
 				if ((time(NULL) - m_accounts[i].m_calls[a]->m_time_start) 
-					>= m_setts->call_no_answer)
-				{
+					>= m_setts->call_no_answer)	{
 					m_accounts[i].m_calls[a]->m_tm_noanswer = false;
 					m_dial_number = "";
 					m_route.status = false;
@@ -1709,10 +1634,8 @@ void sip_t::marker_work()
 
 void sip_t::first_digit_exec()
 {
-	if (m_firstdigit_start)
-	{
-		if ((time(NULL) - m_firstdigit_begin) >= m_setts->first_digit)
-		{
+	if (m_firstdigit_start)	{
+		if ((time(NULL) - m_firstdigit_begin) >= m_setts->first_digit) {
 			first_digit_stop();
 			get_tone()->busy();
 			hang_phone();
@@ -1726,27 +1649,22 @@ void sip_t::first_digit_exec()
 void sip_t::inter_digit_exec()
 {
 	if (m_interdigit_start)
-		if ((time(NULL) - m_interdigit_begin) >= m_setts->inter_digit)
-		{
+		if ((time(NULL) - m_interdigit_begin) >= m_setts->inter_digit) {
 			inter_digit_stop();
-			if (!m_dial_number.empty())
-			{ 	//	dial this number
+			if (!m_dial_number.empty())	{ 	//	dial this number
 				first_digit_stop();
 
-				if (find_user_phone_by_dial_number(m_dial_number))
-				{
+				if (find_user_phone_by_dial_number(m_dial_number)) {
 					m_device->led_button_off(func_t::OK);
 					m_device->led_button_off(func_t::SpeedDial);
 				}
-				else
-				{
+				else {
 					get_tone()->busy();
 					hang_phone();
 					phone_status_define();
 				}
 			}
-			else
-			{
+			else {
 				hang_phone();
 				get_tone()->tones_long_stop();
 				phone_status_define();

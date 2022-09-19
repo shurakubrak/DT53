@@ -38,8 +38,7 @@ bool keypad_t::lst_u2s_access(device_event_t* event, access_t access)
 	bool ret;
 
 	unique_lock<mutex> locker(m_mx_u2s);
-	switch (access)
-	{
+	switch (access) {
 	case access_t::WRITE:
 		m_lst_u2s.push_back(*event);
 		ret = true;
@@ -67,8 +66,7 @@ bool keypad_t::lst_flash_access(flash_t* flash, access_t access)
 	bool ret;
 
 	unique_lock<mutex> locker(m_mx_flash);
-	switch (access)
-	{
+	switch (access)	{
 	case access_t::WRITE:
 		m_lst_flash.push_back(*flash);
 		ret = true;
@@ -119,8 +117,7 @@ bool keypad_t::open()
 		
 
 		/*SPI open*/
-		if (wiringPiSPISetup(SPI_CHANNEL, 100000) < 0)
-		{
+		if (wiringPiSPISetup(SPI_CHANNEL, 100000) < 0) {
 			cout << "SPI setup ERROR" << endl;
 			return false;
 		}
@@ -211,8 +208,7 @@ void keypad_t::read()
 	device_event_t event;
 	event.ev = dcButton;
 	bool ret = false;
-	for (int i = 0; i < KEY_CHIPs / (m_ext ? 1 : 2); i++)
-	{
+	for (int i = 0; i < KEY_CHIPs / (m_ext ? 1 : 2); i++) {
 		/*проверим прерывание*/
 		if ((i < KEY_CHIPs / 2 && digitalRead(KPlocal_IRQ) == LOW)
 			|| (i >= KEY_CHIPs / 2 && digitalRead(KPext_IRQ) == LOW))
@@ -259,8 +255,7 @@ bool keypad_t::key_read(int chip)
 			if (0x01 & (inBuf[3] >> a)) {
 				event.index = m_keychip[chip][a].key_map;
 				m_keychip[chip][a].tm = get_time_ms();
-				switch (m_keychip[chip][a].status)
-				{
+				switch (m_keychip[chip][a].status) {
 				case HIGH:/*взводим кнопку*/
 					m_keychip[chip][a].status = LOW;
 					break;
@@ -299,8 +294,7 @@ void keypad_t::flashing()
 		while (get_flash(&flash)) {
 			if (flash.status == OFF) {
 				if (get_time_ms() - get_time_ms(flash.tm_off)
-					>= flash.interval_off)
-				{
+					>= flash.interval_off) {
 					led(flash.gpio, true);
 					flash.status = ON;
 					flash.tm_on = std::chrono::system_clock::now();
@@ -308,8 +302,7 @@ void keypad_t::flashing()
 			}
 			else if (flash.status == ON) {
 				if (get_time_ms() - get_time_ms(flash.tm_on)
-					>= flash.interval_on)
-				{
+					>= flash.interval_on) {
 					led(flash.gpio, false);
 					flash.status = OFF;
 					flash.tm_off = std::chrono::system_clock::now();

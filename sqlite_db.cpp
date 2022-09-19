@@ -16,8 +16,7 @@ bool sqlite_db_t::open_db()
 
 void sqlite_db_t::close_db()
 {
-	if (m_stmt)
-	{
+	if (m_stmt)	{
 		sqlite3_finalize(m_stmt);
 		m_stmt = NULL;
 	}
@@ -35,8 +34,7 @@ bool sqlite_db_t::exec_sql(bool SIU)
 		&m_stmt, 0) != SQLITE_OK)
 		return false;
 
-	switch (sqlite3_step(m_stmt))
-	{
+	switch (sqlite3_step(m_stmt)) {
 	case SQLITE_DONE:
 		if (SIU)
 			return true;
@@ -62,8 +60,7 @@ void sqlite_db_t::first_rec()
 bool sqlite_db_t::next_rec()
 {
 	int r = sqlite3_step(m_stmt);
-	switch (r)
-	{
+	switch (r) {
 	case SQLITE_DONE:
 		return false;
 	case SQLITE_ROW:
@@ -83,11 +80,9 @@ string sqlite_db_t::field_by_name(string field_name)
 	int field_number = sqlite3_column_count(m_stmt);
 	if (field_number)
 		for (int i = 0; i < field_number; i++)
-			if (sqlite3_column_name(m_stmt, i) == field_name)
-			{
+			if (sqlite3_column_name(m_stmt, i) == field_name) {
 				type = sqlite3_column_type(m_stmt, i);
-				switch (type)
-				{
+				switch (type) {
 				case SQLITE_INTEGER:
 					strResult = to_string(sqlite3_column_int(m_stmt, i));
 					break;

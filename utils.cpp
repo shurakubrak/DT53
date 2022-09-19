@@ -108,12 +108,10 @@ string pi_calc(int n)
 	vector<int> r(M, 2);
 	string pi;
 	pi.reserve(n + 1);
-	for (int i = 0; i < n; ++i)
-	{
+	for (int i = 0; i < n; ++i)	{
 		int carry = 0;
 		int sum = 0;
-		for (int j = M - 1; j >= 0; --j)
-		{
+		for (int j = M - 1; j >= 0; --j) {
 			r[j] *= 10;
 			sum = r[j] + carry;
 			int q = sum / (2 * j + 1);
@@ -122,15 +120,12 @@ string pi_calc(int n)
 		}
 		r[0] = sum % 10;
 		int q = sum / 10;
-		if (q >= 10)
-		{
+		if (q >= 10) {
 			q = q - 10;
-			for (int j = pi.length() - 1;; --j)
-			{
+			for (int j = pi.length() - 1;; --j) {
 				if (pi[j] == '9')
 					pi[j] = '0';
-				else
-				{
+				else {
 					++pi[j];
 					break;
 				}
@@ -279,8 +274,7 @@ bool is_valid_ip_address(string checkValue)
 	//получаем указатель на первый блок до точки
 	ch = strtok(st, ".");
 
-	while (ch != NULL)
-	{
+	while (ch != NULL) {
 		blocksCount++;
 		num = 0;
 		i = 0;
@@ -296,23 +290,17 @@ bool is_valid_ip_address(string checkValue)
 		}
 
 		if (num < 0 || num>255)
-		{
 			return false;
-		}
 		//первый и последний блок не равны нулю
 		if ((blocksCount == 1 && num == 0))
-		{
 			return false;
-		}
 		//получаем указатель на следующий блок
 		ch = strtok(NULL, ".");
 	}
 
 	// проверяем общее количество блоков
 	if (blocksCount != 4)
-	{
 		return false;
-	}
 	free(st);
 	free(ch);
 	return true;
@@ -325,8 +313,7 @@ string get_cpu_id()
 	char* arg = 0;
 	size_t size = 0;
 	std::string ID;
-	while (getdelim(&arg, &size, 0, cpuinfo) != -1)
-	{
+	while (getdelim(&arg, &size, 0, cpuinfo) != -1) {
 		std::string str(arg);
 		ID = str.substr(str.size() - 17, 16);
 	}
@@ -340,8 +327,7 @@ string format_addr(string addr)
 	string str = "";
 	bool write = false;
 
-	for (unsigned int i = 0; i < addr.length(); i++)
-	{
+	for (unsigned int i = 0; i < addr.length(); i++) {
 		if (addr[i] == ':') write = true;
 		else if ((addr[i] == '>') || (addr[i] == '@')) break;
 		else if (write)	str += addr[i];
@@ -355,8 +341,7 @@ string format_addr_server(string addr)
 	string str = "";
 	bool write = false;
 
-	for (unsigned int i = 0; i < addr.length(); i++)
-	{
+	for (unsigned int i = 0; i < addr.length(); i++) {
 		if (addr[i] == '@') write = true;
 		else if ((addr[i] == '>') || (i == addr.length())) break;
 		else if (write)	str += addr[i];

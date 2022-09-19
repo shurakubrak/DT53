@@ -18,8 +18,7 @@ void account_t::onRegState(OnRegStateParam& prm)
 		cmd.call = "1";
 		m_active = true;
 
-		if (!m_buddy_reg && m_acc_set.sip_ver != SIP_VER_PTP)
-		{
+		if (!m_buddy_reg && m_acc_set.sip_ver != SIP_VER_PTP) {
 			set_status(PJSUA_BUDDY_STATUS_ONLINE, PJRPID_ACTIVITY_AWAY, "");
 			m_buddy_reg = true;
 
@@ -55,8 +54,7 @@ bool account_t::create_acc(bool flModify)
 		acc_cfg.idUri = user;
 
 		acc_cfg.idUri = acc_cfg.idUri + "@" + m_acc_set.sipserver;
-		if (m_acc_set.sip_ver != SIP_VER_PTP)
-		{
+		if (m_acc_set.sip_ver != SIP_VER_PTP) {
 			acc_cfg.regConfig.registrarUri = "sip:" + m_acc_set.sipserver;
 			acc_cfg.sipConfig.authCreds.push_back(AuthCredInfo("digest", "*",
 				m_acc_set.phone, 0, m_acc_set.password));
@@ -92,14 +90,12 @@ void account_t::buddy_register(string phone, int sip_ver, bool monitor)
 
 	buddy_t* bd = new buddy_t(sip_ver, m_sip);
 
-	if (m_acc_set.sip_ver != SIP_VER_PTP)
-	{
+	if (m_acc_set.sip_ver != SIP_VER_PTP) {
 		bud_cfg.uri = "sip:" + phone + "@" + m_acc_set.sipserver;
 		bd->create(*this, bud_cfg);
 		bd->subscribePresence(monitor);
 	}
-	else
-	{
+	else {
 		bud_cfg.uri = "sip:" + phone;
 		bd->create(*this, bud_cfg);
 		bd->subscribePresence(monitor);
@@ -110,8 +106,7 @@ void account_t::buddy_register(string phone, int sip_ver, bool monitor)
 
 void account_t::set_status(pjsua_buddy_status status, pjrpid_activity activity, string note)
 {
-		if (m_acc_set.sip_ver == SIP_VER_PTP)
-		{
+		if (m_acc_set.sip_ver == SIP_VER_PTP) {
 			if (note == "old")
 				setOnlineStatus(m_pres_st);
 			else {
@@ -121,8 +116,7 @@ void account_t::set_status(pjsua_buddy_status status, pjrpid_activity activity, 
 				setOnlineStatus(m_pres_st);
 			}
 		}
-		else if (note != "old" && !note.empty())
-		{   // only status Connect
+		else if (note != "old" && !note.empty()){   // only status Connect
 			m_pres_st.status = status;
 			m_pres_st.activity = activity;
 			m_pres_st.note = note;
@@ -154,8 +148,7 @@ bool account_t::call_to(string portB, string system_message, bool to_list)
 			if (!m_calls[i]->isActive()) 
 				continue;
 			
-			if (format_addr(m_calls[i]->getInfo().remoteUri) == portB)
-			{
+			if (format_addr(m_calls[i]->getInfo().remoteUri) == portB) {
 				prm.statusCode = PJSIP_SC_OK;
 				m_calls[i]->hangup(prm);
 				m_sip->m_route.status = false;
@@ -168,8 +161,7 @@ bool account_t::call_to(string portB, string system_message, bool to_list)
 			if (m_sip->calculate_calls() >= 1)
 				return false;
 			
-		if (m_acc_set.sip_ver == SIP_VER_PTP)
-		{
+		if (m_acc_set.sip_ver == SIP_VER_PTP) {
 			if (to_list) {
 				//send test
 				call_queue_t stCQ;
@@ -190,8 +182,7 @@ bool account_t::call_to(string portB, string system_message, bool to_list)
 				call->makeCall("sip:" + portB, prm);
 				if (system_message == sip_msg::Speaker ||
 					system_message == sip_msg::Horn ||
-					system_message == sip_msg::Mic)
-				{
+					system_message == sip_msg::Mic)	{
 					msg_prm.content = system_message;
 					call->sendInstantMessage(msg_prm);
 				}
@@ -199,8 +190,7 @@ bool account_t::call_to(string portB, string system_message, bool to_list)
 				return true;
 			}
 		}
-		else if (m_acc_set.sip_ver != SIP_VER_PTP)
-		{
+		else if (m_acc_set.sip_ver != SIP_VER_PTP) {
 			call = new call_t(*this);
 			portB = "sip:" + portB + "@" + m_acc_set.sipserver;
 			m_calls.push_back(call);
@@ -235,17 +225,15 @@ void account_t::onIncomingCall(OnIncomingCallParam& iprm)
 		m_calls.push_back(call);
 		call->m_in_call = true;
 
-		if (num_calls > 0) //второй и т.д. вызов
-		{
-			if (!m_sip->m_setts->multiline)//отбой
-			{
+		//второй и т.д. вызов
+		if (num_calls > 0) {
+			if (!m_sip->m_setts->multiline)	{
 				prm.statusCode = PJSIP_SC_NOT_ACCEPTABLE_ANYWHERE;
 				call->answer(prm);
 				return;
 			}
-
-			if (m_acc_set.auto_answer)//второй вызов будет звонеть
-			{
+			//второй вызов будет звонеть
+			if (m_acc_set.auto_answer) {
 				prm.statusCode = PJSIP_SC_RINGING;
 				call->answer(prm);
 				set_status(PJSUA_BUDDY_STATUS_ONLINE, PJRPID_ACTIVITY_BUSY, "");
@@ -256,8 +244,7 @@ void account_t::onIncomingCall(OnIncomingCallParam& iprm)
 		}
 		else if (num_calls == 0) //первый вызов
 		{
-			if (m_acc_set.auto_answer)
-			{	//ответить
+			if (m_acc_set.auto_answer) {	//ответить
 				prm.statusCode = PJSIP_SC_RINGING;
 				call->answer(prm);
 				set_status(PJSUA_BUDDY_STATUS_ONLINE, PJRPID_ACTIVITY_BUSY, "");
@@ -289,8 +276,8 @@ void account_t::onInstantMessage(OnInstantMessageParam& prm)
 
 	try
 	{
-		if (prm.msgBody == sip_msg::CallTest) //запрос на тест
-		{
+		//запрос на тест
+		if (prm.msgBody == sip_msg::CallTest) {
 			msg_prm.content = sip_msg::CallTestResponse;
 
 			bd = findBuddy2("sip:" + format_addr(prm.fromUri));
@@ -312,16 +299,15 @@ void account_t::onInstantMessage(OnInstantMessageParam& prm)
 				}
 			}
 		}
-		else if (prm.msgBody == sip_msg::CallTestResponse) //тест ОК
-		{
+		//тест ОК
+		else if (prm.msgBody == sip_msg::CallTestResponse) {
 			call_queue_t cq;
 			if (lst_call_query_access(&cq, format_addr(prm.fromUri), access_t::READ))
 				call_to(cq.portB, cq.call_type, false);
 		}
 	}
 	catch (Error err) {
-		if (err.status == PJ_ENOTFOUND && prm.msgBody == sip_msg::CallTest)
-		{
+		if (err.status == PJ_ENOTFOUND && prm.msgBody == sip_msg::CallTest)	{
 			buddy_register(format_addr(prm.fromUri), m_acc_set.sip_ver, true);
 			try {
 				bd = findBuddy2("sip:" + format_addr(prm.fromUri));
@@ -363,20 +349,16 @@ bool account_t::answer(string portB)
 	CallOpParam prm;
 
 	prm.statusCode = PJSIP_SC_OK;
-	for (unsigned int i = 0; i < m_calls.size(); i++)
-	{
+	for (unsigned int i = 0; i < m_calls.size(); i++) {
 		if (!m_calls[i]->isActive())
 			continue;
 		if (m_calls[i]->getInfo().state == PJSIP_INV_STATE_EARLY &&
-			m_calls[i]->m_in_call)
-		{
-			if (portB.empty())
-			{
+			m_calls[i]->m_in_call) {
+			if (portB.empty()) {
 				m_calls[i]->answer(prm);
 				return true;
 			}
-			else if (format_addr(m_calls[i]->getInfo().remoteUri) == portB)
-			{
+			else if (format_addr(m_calls[i]->getInfo().remoteUri) == portB)	{
 				m_calls[i]->answer(prm);
 				return true;
 			}
@@ -401,8 +383,7 @@ void account_t::hold(int callID)
 	}
 
 	CallInfo ci = m_calls[callID]->getInfo();
-	switch (m_acc_set.sip_ver)
-	{
+	switch (m_acc_set.sip_ver) {
 	case SIP_VER_PTP:
 		for (unsigned a = 0; a < ci.media.size(); a++) {
 			if (ci.media[a].type == PJMEDIA_TYPE_AUDIO && m_calls[callID]->getMedia(a)) {
@@ -438,11 +419,9 @@ void account_t::unhold(int callID)
 	sip_cmd_t cmd;
 
 	if (m_calls[callID]->m_call_status == call_status_t::OnHold
-		&& m_calls[callID]->isActive())
-	{
+		&& m_calls[callID]->isActive())	{
 		CallInfo ci = m_calls[callID]->getInfo();
-		switch (m_acc_set.sip_ver)
-		{
+		switch (m_acc_set.sip_ver) {
 		case SIP_VER_PTP:
 			for (unsigned a = 0; a < ci.media.size(); a++) {
 				if (ci.media[a].type == PJMEDIA_TYPE_AUDIO && m_calls[callID]->getMedia(a)) {
@@ -557,8 +536,7 @@ void account_t::bye_call_all()
 	for (unsigned int i = 0; i < m_calls.size(); i++)
 		lCalls.push_back(m_calls[i]);
 
-	for (unsigned int i = 0; i < count; i++)
-	{
+	for (unsigned int i = 0; i < count; i++) {
 		call_t* call = lCalls.front();
 		if (!call->isActive())
 			continue;
@@ -582,8 +560,7 @@ bool account_t::lst_call_query_access(call_queue_t* cq, string portB, access_t a
 	vector<vector<call_queue_t>::iterator> rem;
 	bool ret = false;
 	//unique_lock<mutex> locker(m_mxCQ);
-	switch (acc)
-	{
+	switch (acc) {
 	case access_t::WRITE:
 		lst_CQ.push_back(*cq);
 		ret = true;
@@ -599,12 +576,9 @@ bool account_t::lst_call_query_access(call_queue_t* cq, string portB, access_t a
 		break;
 	case access_t::DELETE:
 		for (auto it = lst_CQ.begin(); it != lst_CQ.end(); ++it)
-		{
 			if ((time(NULL) - it->time_test_start) >= TMR_CQ)
 				rem.push_back(it);
-		}
-		for (unsigned int i = 0; i < rem.size(); i++)
-		{
+		for (unsigned int i = 0; i < rem.size(); i++) {
 			lst_CQ.erase(rem[i]);
 			ret = true;
 		}
@@ -633,8 +607,7 @@ void account_t::simplex(string direction)
 	if (m_active)
 		for (unsigned int i = 0; i < m_calls.size(); i++)
 			if (m_calls[i]->getInfo().state == PJSIP_INV_STATE_CONFIRMED ||
-				m_calls[i]->getInfo().state == PJSIP_INV_STATE_CONNECTING)
-			{
+				m_calls[i]->getInfo().state == PJSIP_INV_STATE_CONNECTING) {
 				msg_prm.content = direction;
 				m_calls[i]->sendInstantMessage(msg_prm);
 			}

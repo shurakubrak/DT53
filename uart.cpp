@@ -78,12 +78,9 @@ void uart_t::read_data()
 		unsigned char rx_buffer[256];
 
 		int rx_length = read(m_fd, (void*)rx_buffer, 255);
-		if (rx_length > 0)
-		{
+		if (rx_length > 0) {
 			for (int i = 0; i < rx_length; i++)
-			{
 				buffer_analize(rx_buffer[i]);
-			}
 			rx_buffer[rx_length] = '\0';
 		}
 	}
@@ -94,13 +91,11 @@ void uart_t::buffer_analize(uint8_t byte)
 {
 	string sendbuf = "";
 
-	if (m_str.size() > 30)
-	{
+	if (m_str.size() > 30) {
 		m_begin = false;
 		m_str = "";
 	}
-	else if (byte == BeginCOM)
-	{
+	else if (byte == BeginCOM) {
 		m_begin = true;
 		m_str = "";
 	}

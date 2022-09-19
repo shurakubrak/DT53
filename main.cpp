@@ -62,8 +62,7 @@ int main(int argc, char** argv)
 	}
 	/*базовый класс SIP*/
 	sip_t sip(path);
-	if (!read_param_ex(&sip))
-	{
+	if (!read_param_ex(&sip)) {
 		std::cout << "ReadParamEx fail" << "\n";
 		return false;
 	}
@@ -139,8 +138,7 @@ RELOAD:
 	reload = false;
 	std::cout << "Device phone in fly" << endl;
 
-	while (true)
-	{
+	while (true) {
 		if (setts.fl_eth_control) {
 			while (!eth_control()) {
 				if (!reload) {
@@ -425,8 +423,7 @@ bool read_param_ex(sip_t* sip)
 	set_mic_filters();
 
 	if (sip->m_ep.libGetState() == PJSUA_STATE_STARTING ||
-		sip->m_ep.libGetState() == PJSUA_STATE_RUNNING)
-	{
+		sip->m_ep.libGetState() == PJSUA_STATE_RUNNING)	{
 
 		sip->players_init();
 
@@ -525,8 +522,7 @@ bool reload_param(sip_t* sip)
 	} while (db.next_rec());
 	db.close_db();
 
-	for (unsigned int i = 0; i < v_sql_res.size(); i++)
-	{
+	for (unsigned int i = 0; i < v_sql_res.size(); i++)	{
 		table_name = v_sql_res[i].first;
 		status = v_sql_res[i].second;
 
@@ -557,8 +553,7 @@ bool reload_param(sip_t* sip)
 			db.close_db();
 			std::cout << "users reload" << endl;
 		}
-		else if (table_name == "buttons" && status)
-		{
+		else if (table_name == "buttons" && status)	{
 			buttons_fill(sip->m_device->m_kp, sip->m_device->m_buttons);
 			sip->reload_buddys();
 			if (!db.open_db())
@@ -573,8 +568,7 @@ bool reload_param(sip_t* sip)
 		}
 		else if (table_name == "functions" && status)
 			;
-		else if (table_name == "codec_priority" && status)
-		{
+		else if (table_name == "codec_priority" && status) {
 			sip->codec_set();
 			if (!db.open_db())
 				return false;
@@ -586,8 +580,7 @@ bool reload_param(sip_t* sip)
 			db.close_db();
 			std::cout << "codec_priority reload" << endl;
 		}
-		else if (table_name == "params" && status)
-		{
+		else if (table_name == "params" && status) {
 			read_param_ex(sip);
 			read_param_dsp(sip->m_device);
 			if (!db.open_db())
@@ -614,8 +607,7 @@ void parse_filter(vector<string> v_filter, filter_data_t* filters_data)
 	string BandWidth = "";
 	
 	int i = 0;
-	for (string filter : v_filter)
-	{
+	for (string filter : v_filter) {
 		part = 0;
 		type = "";
 		order = "";
@@ -640,15 +632,13 @@ void parse_filter(vector<string> v_filter, filter_data_t* filters_data)
 					BandWidth += ch;
 					break;
 				}
-		if (type.empty() || order.empty() || Frequency.empty() || BandWidth.empty())
-		{
+		if (type.empty() || order.empty() || Frequency.empty() || BandWidth.empty()) {
 			filters_data[i].filterType = 0;
 			filters_data[i].filterOrder = 0;
 			filters_data[i].filterFrequency = 0;
 			filters_data[i].filterBandWidth = 0;
 		}
-		else
-		{
+		else {
 			filters_data[i].filterType = atoi(type.c_str());
 			filters_data[i].filterOrder = atoi(order.c_str());
 			filters_data[i].filterFrequency = atoi(Frequency.c_str());
@@ -674,11 +664,9 @@ void find_cpu()
 		std::cout << "SQLite ERROR: read table licenses error" << endl;
 		return;
 	}
-	do
-	{
+	do {
 		cpuIDcrypto = db.field_by_name("license");
-		if (cpuID == decrypt_licence(cpuIDcrypto))
-		{
+		if (cpuID == decrypt_licence(cpuIDcrypto)) {
 			setts.licence = true;
 			db.m_sql_str = "update operators set license='Y'";
 			if (!db.exec_sql(true)) {
@@ -725,8 +713,7 @@ bool buttons_fill(keypad_t* kp, vector<button_t> buttons)
 		string Phone = "";
 		string SipVer = "";
 		int def_phone = atoi(db.field_by_name("def_phone").c_str());
-		switch (def_phone)
-		{
+		switch (def_phone) {
 		case 1:
 			Phone = db.field_by_name("phone");
 			Server = db.field_by_name("server");
@@ -787,11 +774,9 @@ bool buttons_fill(keypad_t* kp, vector<button_t> buttons)
 	//}
 
 	db.m_sql_str = "select * from users";
-	if (db.exec_sql())
-	{
+	if (db.exec_sql()) {
 		i = 0;
-		do
-		{
+		do {
 			string Server = "";
 			string Phone = "";
 			int sip_ver = atoi(db.field_by_name("sip_ver").c_str());
@@ -867,8 +852,7 @@ void app_control()
 {
 	if (get_time_ms() - t_control > 1000) {
 		t_control = get_time_ms();
-		if (pFile == nullptr || pFile == 0)
-		{
+		if (pFile == nullptr || pFile == 0)	{
 			pFile = fopen("/tmp/phone", "w");
 			if (pFile == nullptr || pFile == 0)
 				return;
@@ -878,8 +862,7 @@ void app_control()
 				fflush(pFile);
 			}
 		}
-		else
-		{
+		else {
 			fseek(pFile, 0, SEEK_SET);
 			fputs(to_string(get_time_ms()).c_str(), pFile);
 			fflush(pFile);
@@ -897,13 +880,11 @@ void function_dial(int button_id, sip_t* sip)
 		sip->m_fl_conf_port = false;
 
 
-	switch (sip->m_device->m_buttons[button_id].function)
-	{
+	switch (sip->m_device->m_buttons[button_id].function) {
 	case func_t::NoFunction:
 		break;
 	case func_t::OK:
-		if (!sip->m_dial_number.empty())
-		{
+		if (!sip->m_dial_number.empty()) {
 			sip->first_digit_stop();
 			sip->inter_digit_stop();
 
@@ -917,21 +898,20 @@ void function_dial(int button_id, sip_t* sip)
 		break;
 
 	case func_t::SpeedDial:
-		if (sip->m_device->m_buttons[button_id].status == led_button_status_t::LED_OFF)
-		{
+		if (sip->m_device->m_buttons[button_id].status 
+			== led_button_status_t::LED_OFF)	{
 			sip->m_device->led_button_on(func_t::SpeedDial);
 			sip->first_digit_start();
 		}
-		else
-		{
+		else {
 			sip->m_device->led_button_on(func_t::SpeedDial);
 			sip->first_digit_stop();
 		}
 		break;
 
 	case func_t::SpeeckerPhone:
-		if (sip->m_device->m_buttons[button_id].status == led_button_status_t::LED_ON)
-		{
+		if (sip->m_device->m_buttons[button_id].status 
+			== led_button_status_t::LED_ON)	{
 			if (sip->m_horn_state)/*есть вызов на рупор, вкл. микр. (см. SetPhoneStatus())*/
 				sip->m_horn_state = false;
 			else {
@@ -944,10 +924,8 @@ void function_dial(int button_id, sip_t* sip)
 				sip->cmd_hungup_all();
 			}
 		}
-		else
-		{	/* включить спикерфон */
-			switch (sip->get_phone_state())
-			{
+		else {	/* включить спикерфон */
+			switch (sip->get_phone_state()) {
 			case phone_status_t::IDLE:
 				sip->first_digit_start();
 				break;
@@ -976,8 +954,8 @@ void function_dial(int button_id, sip_t* sip)
 		break;
 
 	case func_t::Call_Horn:
-		if (sip->m_device->m_buttons[button_id].status == led_button_status_t::LED_OFF)
-		{
+		if (sip->m_device->m_buttons[button_id].status 
+			== led_button_status_t::LED_OFF) {
 			sip->first_digit_start();
 			sip->m_device->led_button_on(func_t::Call_Horn);
 			sip->m_device->led_button_off(func_t::Call_Speecker);
@@ -986,8 +964,7 @@ void function_dial(int button_id, sip_t* sip)
 			sip->m_md_call_speecker = false;
 			sip->m_md_call_mic = false;
 		}
-		else
-		{
+		else {
 			sip->first_digit_stop();
 			sip->m_device->led_button_off(func_t::Call_Horn);
 			sip->m_md_call_horn = false;
@@ -995,8 +972,8 @@ void function_dial(int button_id, sip_t* sip)
 		break;
 
 	case func_t::Call_Speecker:
-		if (sip->m_device->m_buttons[button_id].status == led_button_status_t::LED_OFF)
-		{
+		if (sip->m_device->m_buttons[button_id].status 
+			== led_button_status_t::LED_OFF) {
 			sip->first_digit_start();
 			sip->m_device->led_button_on(func_t::Call_Speecker);
 			sip->m_device->led_button_off(func_t::Call_Horn);
@@ -1005,8 +982,7 @@ void function_dial(int button_id, sip_t* sip)
 			sip->m_md_call_speecker = true;
 			sip->m_md_call_mic = false;
 		}
-		else
-		{
+		else {
 			sip->first_digit_stop();
 			sip->m_device->led_button_off(func_t::Call_Speecker);
 			sip->m_md_call_speecker = false;
@@ -1014,8 +990,8 @@ void function_dial(int button_id, sip_t* sip)
 		break;
 
 	case func_t::Call_Mic:
-		if (sip->m_device->m_buttons[button_id].status == led_button_status_t::LED_OFF)
-		{
+		if (sip->m_device->m_buttons[button_id].status 
+			== led_button_status_t::LED_OFF) {
 			sip->first_digit_start();
 			sip->m_device->led_button_on(func_t::Call_Mic);
 			sip->m_device->led_button_off(func_t::Call_Horn);
@@ -1024,8 +1000,7 @@ void function_dial(int button_id, sip_t* sip)
 			sip->m_md_call_speecker = false;
 			sip->m_md_call_mic = true;
 		}
-		else
-		{
+		else {
 			sip->first_digit_stop();
 			sip->m_device->led_button_off(func_t::Call_Speecker);
 			sip->m_md_call_mic = false;
@@ -1055,28 +1030,25 @@ void function_dial(int button_id, sip_t* sip)
 
 
 	case func_t::ConfPort:
-		if (!sip->m_fl_conf_port)
-		{
+		if (!sip->m_fl_conf_port) {
 			if (sip->mk_conf_port(button_id)) {
 				sip->m_fl_conf_port = true;
 				sip->m_device->led_button_on(static_cast<func_t>(button_id), true);
 			}
 		}
-		else
-		{
+		else {
 			for (unsigned int i = 0; i < sip->m_device->m_buttons[button_id].calls.size(); i++)
 				sip->cmd_hungup(sip->m_device->m_buttons[button_id].calls[i]->getInfo().callIdString);
 		}
 		break;
 
 	case func_t::DTMF:
-		if (sip->m_device->m_buttons[button_id].status == led_button_status_t::LED_OFF)
-		{
+		if (sip->m_device->m_buttons[button_id].status 
+			== led_button_status_t::LED_OFF) {
 			sip->m_fl_dial_dtmf = true;
 			sip->m_device->led_button_on(func_t::DTMF);
 		}
-		else
-		{
+		else {
 			sip->m_fl_dial_dtmf = false;
 			sip->m_device->led_button_off(func_t::DTMF);
 		}
@@ -1163,35 +1135,30 @@ void function_dial(int button_id, sip_t* sip)
 			digit = to_string(static_cast<int>(sip->m_device->m_buttons[button_id].function));
 
 		//набор DTMF или собираем цифры для вызова
-		if (!sip->m_fl_dial_dtmf)
-		{
+		if (!sip->m_fl_dial_dtmf) {
 			sip->m_dial_number += digit;
 			cout << "dial: " << sip->m_dial_number << endl;
 			if (sip->find_user_phone_by_dial_number(sip->m_dial_number, true)) {
 				sip->m_device->led_button_off(func_t::OK);
 				sip->m_device->led_button_off(func_t::SpeedDial);
 			}
-			else
-			{
-				if (sip->m_route.status)
-				{
-					if (sip->m_dial_number.length() == (unsigned)sip->m_route.num_digit)
-					{
+			else {
+				if (sip->m_route.status) {
+					if (sip->m_dial_number.length() 
+						== (unsigned)sip->m_route.num_digit) {
 						if (sip->m_route.account)
 							if (sip->m_accounts[sip->m_route.account].m_acc_set.sip_ver != SIP_VER_PTP)
-								sip->cmd_call(sip->m_accounts[sip->m_route.account].m_acc_set.sipserver, sip->m_dial_number, "base");
+								sip->cmd_call(sip->m_accounts[sip->m_route.account].m_acc_set.sipserver, 
+									sip->m_dial_number, "base");
 						sip->m_device->led_button_off(func_t::OK);
 						sip->m_device->led_button_off(func_t::SpeedDial);
 					}
 					else
 						sip->inter_digit_start();
 				}
-				else
-				{
-					if (sip->find_rout(sip->m_dial_number))
-					{
-						if (sip->m_dial_number.length() == (unsigned)sip->m_route.num_digit)
-						{
+				else {
+					if (sip->find_rout(sip->m_dial_number)) {
+						if (sip->m_dial_number.length() == (unsigned)sip->m_route.num_digit) {
 							if (sip->m_route.account)
 								if (sip->m_accounts[sip->m_route.account].m_acc_set.sip_ver != SIP_VER_PTP)
 									sip->cmd_call(sip->m_accounts[sip->m_route.account].m_acc_set.sipserver, sip->m_dial_number, "base");
@@ -1218,8 +1185,7 @@ void U2S(sip_t* sip)
 	device_event_t event;
 
 	if (sip->m_device->m_kp->get_event(&event))	{
-		switch (event.ev)
-		{
+		switch (event.ev) {
 		case dcButton:
 			/*функция Орех работает симплексно,
 			для других операций событие
@@ -1243,15 +1209,14 @@ void U2S(sip_t* sip)
 				sip->first_digit_stop();
 			sip->inter_digit_stop();
 
-			if (sip->m_device->m_buttons[event.index].status == led_button_status_t::SUBS_CALL)
-			{	//answer
+			if (sip->m_device->m_buttons[event.index].status 
+				== led_button_status_t::SUBS_CALL) {	//answer
 				sip->m_device->led_button_off(func_t::SpeedDial);
 				sip->cmd_answer(sip->m_device->m_buttons[event.index].phone);
 			}
-			else
-			{
-				if (sip->m_device->get_button_by_function(func_t::SpeedDial).status == led_button_status_t::LED_ON)
-				{	//если ПА вкл., набираем прямого.
+			else {
+				if (sip->m_device->get_button_by_function(func_t::SpeedDial).status 
+					== led_button_status_t::LED_ON)	{	//если ПА вкл., набираем прямого.
 					//если нет прямого, пробуем спикер
 					if (!sip->find_user_phone_by_button_call(event.index))
 						if (sip->m_device->m_buttons[event.index].function == func_t::SpeeckerPhone)
@@ -1280,10 +1245,8 @@ void S2D(sip_t* sip)
 	bool tp = false;
 
 	while (true) {
-		if (sip->get_command(&cmd))
-		{
-			switch (cmd.ev)
-			{
+		if (sip->get_command(&cmd))	{
+			switch (cmd.ev)	{
 			case sip_ev_t::Calling:
 				sip->phone_status_define();
 				sip->m_route.status = false;
@@ -1293,8 +1256,7 @@ void S2D(sip_t* sip)
 				sip->m_device->led_button_off(func_t::Call_Mic);
 
 				vButton = sip->m_device->find_button_by_phone_presents(cmd.portB, true);
-				for (size_t b = 0; b < vButton.size(); b++)
-				{
+				for (size_t b = 0; b < vButton.size(); b++)	{
 					if (sip->m_device->m_buttons[vButton[b]].function < func_t::Opex_0	/*не для кнопок с Орех*/
 						|| sip->m_device->m_buttons[vButton[b]].function > func_t::Opex_6) {
 						sip->m_device->led_button_off(static_cast<func_t>(vButton[b]), true);
@@ -1306,8 +1268,7 @@ void S2D(sip_t* sip)
 				sip->phone_status_define();
 
 				vButton = sip->m_device->find_button_by_phone_presents(cmd.portB, true);
-				for (size_t b = 0; b < vButton.size(); b++)
-				{
+				for (size_t b = 0; b < vButton.size(); b++)	{
 					if (sip->m_device->m_buttons[vButton[b]].function < func_t::Opex_0	/*не для кнопок с Орех*/
 						|| sip->m_device->m_buttons[vButton[b]].function > func_t::Opex_6) {
 						sip->m_device->led_button_on(static_cast<func_t>(vButton[b]), true);
@@ -1319,8 +1280,7 @@ void S2D(sip_t* sip)
 				sip->phone_status_define();
 
 				vButton = sip->m_device->find_button_by_phone_presents(cmd.portB, true);
-				for (size_t b = 0; b < vButton.size(); b++)
-				{
+				for (size_t b = 0; b < vButton.size(); b++)	{
 					if (sip->m_device->m_buttons[vButton[b]].function < func_t::Opex_0	/*не для кнопок с Орех*/
 						|| sip->m_device->m_buttons[vButton[b]].function > func_t::Opex_6) {
 						sip->m_device->led_button_flash(static_cast<func_t>(vButton[b]), true);
@@ -1340,8 +1300,7 @@ void S2D(sip_t* sip)
 				sip->phone_status_define();
 
 				vButton = sip->m_device->find_button_by_phone_presents(cmd.portB, true);
-				for (size_t b = 0; b < vButton.size(); b++)
-				{
+				for (size_t b = 0; b < vButton.size(); b++)	{
 					if (sip->m_device->m_buttons[vButton[b]].function < func_t::Opex_0	/*не для кнопок с Орех*/
 						|| sip->m_device->m_buttons[vButton[b]].function > func_t::Opex_6) {
 						sip->m_device->led_button_on(static_cast<func_t>(vButton[b], true));
@@ -1354,8 +1313,7 @@ void S2D(sip_t* sip)
 				sip->phone_status_define();
 
 				vButton = sip->m_device->find_button_by_phone_presents(cmd.portB, true);
-				for (size_t b = 0; b < vButton.size(); b++)
-				{
+				for (size_t b = 0; b < vButton.size(); b++)	{
 					sip->m_device->led_button_off(static_cast<func_t>(vButton[b], true));
 					sip->m_device->m_buttons[vButton[b]].status = led_button_status_t::LED_OFF;
 					/*для Ореха сигнал Busy ре подаётся*/
@@ -1378,8 +1336,7 @@ void S2D(sip_t* sip)
 				sip->phone_status_define();
 
 				vButton = sip->m_device->find_button_by_phone_presents(cmd.portB, true);
-				for (size_t b = 0; b < vButton.size(); b++)
-				{
+				for (size_t b = 0; b < vButton.size(); b++)	{
 					sip->m_device->led_button_off(static_cast<func_t>(vButton[b], true));
 					sip->m_device->m_buttons[vButton[b]].status = led_button_status_t::LED_OFF;
 				}
@@ -1430,8 +1387,7 @@ void S2D(sip_t* sip)
 				//CallID - present status
 				vButton = sip->m_device->find_button_by_phone_presents(cmd.portA, true);
 
-				for (size_t b = 0; b < vButton.size(); b++)
-				{
+				for (size_t b = 0; b < vButton.size(); b++) {
 					if (cmd.call == sip_pres_st::Fail) {
 						sip->m_device->led_button_off(static_cast<func_t>(vButton[b], true));
 						sip->m_device->m_buttons[vButton[b]].status = led_button_status_t::LED_OFF;
@@ -1492,10 +1448,8 @@ void T2D(sip_t* sip)
 		sip->inter_digit_exec();
 
 		//Опрос базы
-		if (get_time_ms() - requestDB >= REQUEST_DB)
-		{
-			if (!setts.licence)
-			{
+		if (get_time_ms() - requestDB >= REQUEST_DB) {
+			if (!setts.licence)	{
 				std::cout << "**************** LICENSE FAIL! ****************" << endl;
 				terminated = 12;
 			}
@@ -1512,7 +1466,6 @@ void T2D(sip_t* sip)
 		//		sip->m_sip_sleep = false;
 		//	}
 		//}
-
 }
 /******************************************************************/
 
